@@ -2,41 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* BioSync 360 Design System - Farm-like Professional Theme 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors */
+    --background: 46 40% 97%;
+    --foreground: 25 25% 15%;
 
+    /* Farm-inspired color palette */
+    --primary: 78 45% 35%; /* Deep forest green */
+    --primary-foreground: 0 0% 98%;
+    --primary-soft: 78 35% 85%; /* Light green */
+    
+    --secondary: 35 40% 75%; /* Warm beige */
+    --secondary-foreground: 25 25% 15%;
+    --secondary-soft: 35 30% 92%;
+    
+    --accent: 45 85% 55%; /* Golden yellow */
+    --accent-foreground: 25 25% 15%;
+    --accent-soft: 45 60% 90%;
+    
+    --earth: 25 35% 45%; /* Rich brown */
+    --earth-foreground: 0 0% 98%;
+    --earth-soft: 25 25% 92%;
+    
+    --sky: 195 80% 65%; /* Soft blue */
+    --sky-foreground: 0 0% 98%;
+    --sky-soft: 195 40% 95%;
+
+    /* Semantic colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 25 25% 15%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --popover-foreground: 25 25% 15%;
+    
+    --muted: 35 30% 92%;
+    --muted-foreground: 25 15% 45%;
+    
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --success: 120 60% 50%;
+    --success-foreground: 0 0% 98%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    
+    --border: 35 20% 85%;
+    --input: 35 20% 90%;
+    --ring: 78 45% 35%;
+    
+    --radius: 0.75rem;
+    
+    /* Custom gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-farm: linear-gradient(180deg, hsl(var(--sky-soft)) 0%, hsl(var(--primary-soft)) 100%);
+    --gradient-earth: linear-gradient(45deg, hsl(var(--earth)) 0%, hsl(var(--secondary)) 100%);
+    
+    /* Glass effect */
+    --glass-bg: hsla(0, 0%, 100%, 0.1);
+    --glass-border: hsla(0, 0%, 100%, 0.2);
+    --glass-backdrop: blur(12px);
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 20px hsla(var(--primary), 0.1);
+    --shadow-medium: 0 8px 30px hsla(var(--primary), 0.15);
+    --shadow-strong: 0 20px 40px hsla(var(--primary), 0.2);
 
     --sidebar-background: 0 0% 98%;
 
