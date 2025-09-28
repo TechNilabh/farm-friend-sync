@@ -3,17 +3,56 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Bluetooth, Upload, Check, Loader2 } from 'lucide-react';
+import { Bluetooth, Upload, Check, Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import farmerThumbsUp from '@/assets/farmer-thumbs-up.jpg';
 
-const SetupSection = () => {
+interface SetupSectionProps {
+  isDeviceSynced: boolean;
+  onDeviceSync: () => void;
+  onNavigateToTracker: () => void;
+}
+
+interface UploadedAnimal {
+  id: string;
+  name: string;
+  image: string;
+  species: string;
+  priority: 'High' | 'Medium' | 'Low';
+  parameters: string[];
+}
+
+const availableParameters = [
+  { id: 'heartrate', label: 'Heartrate', default: true },
+  { id: 'hydration', label: 'Hydration', default: true },
+  { id: 'gestation', label: 'Gestation period', default: false },
+  { id: 'temperature', label: 'Temperature', default: false },
+  { id: 'healthScore', label: 'Health Score', default: true },
+  { id: 'activity', label: 'Activity', default: false },
+  { id: 'breathing', label: 'Breathing', default: false },
+  { id: 'hunger', label: 'Hunger', default: false },
+];
+
+const SetupSection: React.FC<SetupSectionProps> = ({ 
+  isDeviceSynced, 
+  onDeviceSync, 
+  onNavigateToTracker 
+}) => {
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [animalName, setAnimalName] = useState('');
+  const [animalPriority, setAnimalPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
+  const [selectedParameters, setSelectedParameters] = useState<string[]>(
+    availableParameters.filter(p => p.default).map(p => p.id)
+  );
+  const [uploadedAnimals, setUploadedAnimals] = useState<UploadedAnimal[]>([]);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
   const { toast } = useToast();
 
@@ -36,6 +75,8 @@ const SetupSection = () => {
       setTimeout(() => {
         setSyncDialogOpen(false);
         setIsConnected(false);
+        onDeviceSync();
+        setSuccessDialogOpen(true);
       }, 2000);
     }, 3000);
   };
@@ -51,21 +92,62 @@ const SetupSection = () => {
     }
   };
 
+  const handleParameterToggle = (parameterId: string) => {
+    const defaultParams = availableParameters.filter(p => p.default).map(p => p.id);
+    
+    if (defaultParams.includes(parameterId)) {
+      // Can't uncheck default parameters
+      return;
+    }
+    
+    if (selectedParameters.includes(parameterId)) {
+      setSelectedParameters(selectedParameters.filter(id => id !== parameterId));
+    } else {
+      if (selectedParameters.length < 6) {
+        setSelectedParameters([...selectedParameters, parameterId]);
+      } else {
+        toast({
+          title: "Parameter Limit",
+          description: "You can select maximum 6 parameters to track.",
+        });
+      }
+    }
+  };
+
   const handleSaveAnimal = () => {
-    if (selectedImage && animalName) {
+    if (selectedImage && animalName && selectedParameters.length > 0) {
+      const newAnimal: UploadedAnimal = {
+        id: Date.now().toString(),
+        name: animalName,
+        image: selectedImage,
+        species: 'Lakhimi',
+        priority: animalPriority,
+        parameters: selectedParameters,
+      };
+      
+      setUploadedAnimals([...uploadedAnimals, newAnimal]);
       setIsUploadComplete(true);
+      
       toast({
         title: "Animal Added",
         description: `${animalName} has been successfully added to your tracking list!`,
       });
       
+      // Reset form but keep modal open
       setTimeout(() => {
-        setUploadDialogOpen(false);
         setSelectedImage(null);
         setAnimalName('');
+        setAnimalPriority('Medium');
+        setSelectedParameters(availableParameters.filter(p => p.default).map(p => p.id));
         setIsUploadComplete(false);
-      }, 2000);
+      }, 1500);
     }
+  };
+
+  const handleAllDone = () => {
+    setUploadDialogOpen(false);
+    setUploadedAnimals([]);
+    onNavigateToTracker();
   };
 
   return (
@@ -150,10 +232,17 @@ const SetupSection = () => {
                   size="lg"
                   onClick={() => setUploadDialogOpen(true)}
                   className="w-full"
+                  disabled={!isDeviceSynced}
                 >
                   <Upload className="w-5 h-5 mr-2" />
                   Add Animals
                 </Button>
+                
+                {!isDeviceSynced && (
+                  <p className="text-sm text-muted-foreground text-center mt-2">
+                    Please sync device first to upload animals
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>
@@ -236,15 +325,46 @@ const SetupSection = () => {
 
         {/* Upload Dialog */}
         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-          <DialogContent className="sm:max-w-lg">
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-2">
                 <Upload className="w-5 h-5 text-accent" />
-                <span>Add Animal</span>
+                <span>Add Animals</span>
               </DialogTitle>
             </DialogHeader>
             
             <div className="space-y-6">
+              {/* Uploaded Animals Display */}
+              {uploadedAnimals.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Uploaded Animals:</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {uploadedAnimals.map((animal) => (
+                      <div key={animal.id} className="border border-border rounded-lg p-3">
+                        <img 
+                          src={animal.image} 
+                          alt={animal.name}
+                          className="w-full h-24 object-cover rounded mb-2"
+                        />
+                        <p className="font-medium text-sm">{animal.name}</p>
+                        <p className="text-xs text-muted-foreground">Priority: {animal.priority}</p>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {uploadedAnimals.length > 0 && (
+                    <Button 
+                      variant="hero" 
+                      size="lg"
+                      onClick={handleAllDone}
+                      className="w-full"
+                    >
+                      All Done - Go to Tracker
+                    </Button>
+                  )}
+                </div>
+              )}
+
               {!selectedImage ? (
                 <div className="text-center">
                   <p className="text-muted-foreground mb-4">
@@ -299,11 +419,56 @@ const SetupSection = () => {
                       />
                     </div>
                     
+                    <div>
+                      <Label htmlFor="animal-priority">Priority</Label>
+                      <Select value={animalPriority} onValueChange={(value: 'High' | 'Medium' | 'Low') => setAnimalPriority(value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="High">High</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Low">Low</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>Select parameters to track (max 6)</Label>
+                      <div className="mt-2 space-y-2">
+                        {availableParameters.map((param) => (
+                          <div key={param.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={param.id}
+                              checked={selectedParameters.includes(param.id)}
+                              onCheckedChange={() => handleParameterToggle(param.id)}
+                              disabled={param.default}
+                            />
+                            <Label htmlFor={param.id} className="text-sm">
+                              {param.label} {param.default && '(Default)'}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Selected: {selectedParameters.length}/6 parameters
+                      </div>
+                      
+                      {selectedParameters.length > 0 && (
+                        <div className="mt-2 p-2 bg-muted rounded text-sm">
+                          <strong>Tracking:</strong> {selectedParameters.map(id => 
+                            availableParameters.find(p => p.id === id)?.label
+                          ).join(', ')}
+                        </div>
+                      )}
+                    </div>
+                    
                     <Button 
                       variant="success" 
                       size="lg"
                       onClick={handleSaveAnimal}
-                      disabled={!animalName || isUploadComplete}
+                      disabled={!animalName || isUploadComplete || selectedParameters.length === 0}
                       className="w-full"
                     >
                       {isUploadComplete ? (
@@ -312,12 +477,51 @@ const SetupSection = () => {
                           Saved Successfully
                         </>
                       ) : (
-                        <>Save</>
+                        <>Save Animal</>
                       )}
                     </Button>
                   </div>
                 </div>
               )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Success Dialog */}
+        <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-center">Step One Complete!</DialogTitle>
+            </DialogHeader>
+            
+            <div className="text-center space-y-6 py-4">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <img 
+                  src={farmerThumbsUp} 
+                  alt="Farmer giving thumbs up"
+                  className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-success"
+                />
+              </motion.div>
+              
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-success">Device Successfully Synced!</h3>
+                <p className="text-muted-foreground">
+                  Your BioSync 360 collar is now connected. You can proceed to upload animal images.
+                </p>
+              </div>
+              
+              <Button 
+                variant="success" 
+                size="lg"
+                onClick={() => setSuccessDialogOpen(false)}
+                className="w-full"
+              >
+                Continue
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

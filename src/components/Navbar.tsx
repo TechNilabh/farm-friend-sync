@@ -1,9 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, User, Activity } from 'lucide-react';
 
-const Navbar = () => {
+interface NavbarProps {
+  userProfileImage?: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ userProfileImage }) => {
+  const location = useLocation();
+  const isTracker = location.pathname === '/tracker';
   return (
     <motion.nav 
       initial={{ y: -50, opacity: 0 }}
@@ -34,7 +41,11 @@ const Navbar = () => {
               <User className="w-4 h-4" />
               <span>Profile</span>
             </Button>
-            <Button variant="glass" size="sm" className="flex items-center space-x-2">
+            <Button 
+              variant={isTracker ? "hero" : "glass"} 
+              size="sm" 
+              className={`flex items-center space-x-2 ${isTracker ? 'ring-2 ring-primary/30' : ''}`}
+            >
               <Activity className="w-4 h-4" />
               <span>Tracker</span>
             </Button>
@@ -42,11 +53,19 @@ const Navbar = () => {
 
           {/* Profile Avatar */}
           <motion.div 
-            className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center cursor-pointer"
+            className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center cursor-pointer overflow-hidden"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
-            <User className="w-5 h-5 text-white" />
+            {userProfileImage ? (
+              <img 
+                src={userProfileImage} 
+                alt="Profile" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <User className="w-5 h-5 text-white" />
+            )}
           </motion.div>
         </div>
       </div>

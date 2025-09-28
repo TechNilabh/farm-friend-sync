@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
@@ -8,8 +9,14 @@ import SuccessStoriesSection from '@/components/SuccessStoriesSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 
-const Index = () => {
+interface IndexProps {
+  userProfileImage?: string;
+}
+
+const Index: React.FC<IndexProps> = ({ userProfileImage }) => {
   const setupRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const [isDeviceSynced, setIsDeviceSynced] = useState(false);
 
   const scrollToSetup = () => {
     setupRef.current?.scrollIntoView({ 
@@ -18,16 +25,28 @@ const Index = () => {
     });
   };
 
+  const handleDeviceSync = () => {
+    setIsDeviceSynced(true);
+  };
+
+  const handleNavigateToTracker = () => {
+    navigate('/tracker');
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <Navbar userProfileImage={userProfileImage} />
       
       <main>
         <HeroSection onGetStarted={scrollToSetup} />
         <FeaturesSection />
         <GuideSection />
         <div ref={setupRef}>
-          <SetupSection />
+          <SetupSection 
+            isDeviceSynced={isDeviceSynced}
+            onDeviceSync={handleDeviceSync}
+            onNavigateToTracker={handleNavigateToTracker}
+          />
         </div>
         <SuccessStoriesSection />
         <ContactSection />
