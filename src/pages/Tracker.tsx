@@ -60,7 +60,7 @@ const mockAnimals: Animal[] = [
   {
     id: '1',
     name: 'Bella',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151095/cow2_fezqun.jpg',
     age: 3,
     priority: 'High',
     healthScore: 8.2,
@@ -78,7 +78,7 @@ const mockAnimals: Animal[] = [
   {
     id: '2',
     name: 'Max',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151096/cow1_r6lcot.jpg',
     age: 5,
     priority: 'Medium',
     healthScore: 7.8,
@@ -101,7 +101,7 @@ const mockDoctors: Doctor[] = [
     name: 'Dr. Rajesh Kumar',
     image: doctor1,
     specialization: 'Large Animal Medicine',
-    location: 'New Delhi, 2.5 km',
+    location: 'Silchar, 2.5 km',
     rating: 4.8,
   },
   {
@@ -109,7 +109,7 @@ const mockDoctors: Doctor[] = [
     name: 'Dr. Priya Sharma',
     image: doctor2,
     specialization: 'Small Animal Surgery',
-    location: 'Gurgaon, 5.2 km',
+    location: 'Silchar, 5.2 km',
     rating: 4.9,
   },
   {
@@ -117,7 +117,7 @@ const mockDoctors: Doctor[] = [
     name: 'Dr. Amit Patel',
     image: doctor3,
     specialization: 'Emergency Care',
-    location: 'Noida, 7.8 km',
+    location: 'Silchar, 7.8 km',
     rating: 4.7,
   },
 ];
@@ -126,21 +126,21 @@ const mockMedicines: Medicine[] = [
   {
     id: '1',
     name: 'Vetmedin',
-    image: '/api/placeholder/100/100',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759152869/vetmedin_cupbst.jpg',
     dosage: '2.5mg twice daily',
     price: '₹850',
   },
   {
     id: '2',
     name: 'Metacam',
-    image: '/api/placeholder/100/100',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759152872/metacam_e8cbbo.jpg',
     dosage: '0.1mg/kg once daily',
     price: '₹620',
   },
   {
     id: '3',
     name: 'Baytril',
-    image: '/api/placeholder/100/100',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759152873/baytril_njfim4.jpg',
     dosage: '5mg/kg twice daily',
     price: '₹1,250',
   },
