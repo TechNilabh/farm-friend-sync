@@ -34,27 +34,27 @@ const Navbar: React.FC<NavbarProps> = ({ userProfileImage }) => {
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
             <Button 
-              variant={location.pathname === '/' ? "hero" : "glass"} 
+              variant={location.pathname === '/' ? "hero" : "default"} 
               size="sm" 
-              className={`flex items-center space-x-2 ${location.pathname === '/' ? 'ring-2 ring-primary/30' : ''}`}
+              className={`flex items-center space-x-2 bg-white/30 text-white border-white/30 hover:bg-white/40 backdrop-blur-sm ${location.pathname === '/' ? 'ring-2 ring-primary/30 bg-white/40' : ''}`}
               onClick={() => navigate('/')}
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
             </Button>
             <Button 
-              variant={location.pathname === '/profile' ? "hero" : "glass"} 
+              variant={location.pathname === '/profile' ? "hero" : "default"} 
               size="sm" 
-              className={`flex items-center space-x-2 ${location.pathname === '/profile' ? 'ring-2 ring-primary/30' : ''}`}
+              className={`flex items-center space-x-2 bg-white/30 text-white border-white/30 hover:bg-white/40 backdrop-blur-sm ${location.pathname === '/profile' ? 'ring-2 ring-primary/30 bg-white/40' : ''}`}
               onClick={() => navigate('/profile')}
             >
               <User className="w-4 h-4" />
               <span>Profile</span>
             </Button>
             <Button 
-              variant={location.pathname === '/tracker' ? "hero" : "glass"} 
+              variant={location.pathname === '/tracker' ? "hero" : "default"} 
               size="sm" 
-              className={`flex items-center space-x-2 ${location.pathname === '/tracker' ? 'ring-2 ring-primary/30' : ''}`}
+              className={`flex items-center space-x-2 bg-white/30 text-white border-white/30 hover:bg-white/40 backdrop-blur-sm ${location.pathname === '/tracker' ? 'ring-2 ring-primary/30 bg-white/40' : ''}`}
               onClick={() => navigate('/tracker')}
             >
               <Activity className="w-4 h-4" />
@@ -67,6 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfileImage }) => {
             className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center cursor-pointer overflow-hidden"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/profile')}
           >
             {userProfileImage ? (
               <img 

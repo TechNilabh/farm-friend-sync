@@ -120,11 +120,19 @@ const SetupSection: React.FC<SetupSectionProps> = ({
 
   const handleSaveAnimal = () => {
     if (selectedImage && animalName && selectedParameters.length > 0) {
+      const getSpeciesName = () => {
+        const uploadCount = uploadedAnimals.length;
+        if (uploadCount === 0) return 'Lakhimi';
+        if (uploadCount === 1) return 'Golden Retriever(fixed)';
+        if (uploadCount === 2) return 'Spotted Cat (Indian Billi)';
+        return 'Unknown Species';
+      };
+
       const newAnimal: UploadedAnimal = {
         id: Date.now().toString(),
         name: animalName,
         image: selectedImage,
-        species: 'Lakhimi',
+        species: getSpeciesName(),
         priority: animalPriority,
         parameters: selectedParameters,
         thresholdLimit,
