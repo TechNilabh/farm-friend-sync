@@ -405,22 +405,37 @@ const Tracker: React.FC<TrackerProps> = ({ userProfileImage }) => {
                         {/* Health Parameters */}
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div className="flex items-center space-x-2">
-                            <Heart className="w-4 h-4 text-destructive" />
-                            <span>{animal.parameters.heartrate} BPM</span>
+                            <Heart className="w-4 h-4 text-destructive animate-pulse" />
+                            <span className="font-mono">{animal.parameters.heartrate} BPM</span>
+                            <div className="w-8 h-2 bg-muted rounded">
+                              <div className="h-full bg-destructive rounded animate-pulse" style={{ width: '60%' }} />
+                            </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             <Droplets className="w-4 h-4 text-sky" />
-                            <span>{animal.parameters.hydration}%</span>
+                            <span className="font-mono">{animal.parameters.hydration}%</span>
+                            <div className="w-8 h-2 bg-muted rounded">
+                              <div 
+                                className="h-full bg-sky rounded transition-all duration-1000" 
+                                style={{ width: `${animal.parameters.hydration}%` }} 
+                              />
+                            </div>
                           </div>
                           {highConnectivity && (
                             <>
                               <div className="flex items-center space-x-2">
                                 <Thermometer className="w-4 h-4 text-warning" />
-                                <span>{animal.parameters.temperature}°C</span>
+                                <span className="font-mono">{animal.parameters.temperature}°C</span>
                               </div>
                               <div className="flex items-center space-x-2">
                                 <Activity className="w-4 h-4 text-primary" />
-                                <span>{animal.parameters.activity}%</span>
+                                <span className="font-mono">{animal.parameters.activity}%</span>
+                                <div className="w-8 h-2 bg-muted rounded">
+                                  <div 
+                                    className="h-full bg-primary rounded" 
+                                    style={{ width: `${animal.parameters.activity}%` }} 
+                                  />
+                                </div>
                               </div>
                             </>
                           )}
@@ -430,7 +445,7 @@ const Tracker: React.FC<TrackerProps> = ({ userProfileImage }) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className={`w-full ${health.color} ${health.textColor} border-current`}
+                          className={`w-full ${health.color} ${health.textColor} border-current font-bold shadow-md`}
                           onClick={() => {
                             setSelectedAnimal(animal);
                             setReportOpen(true);
@@ -438,6 +453,35 @@ const Tracker: React.FC<TrackerProps> = ({ userProfileImage }) => {
                         >
                           Health Score: {animal.healthScore.toFixed(1)} - {health.status}
                         </Button>
+                        
+                        {/* Live Location Map */}
+                        <div className="mt-4 space-y-3">
+                          <div className="bg-muted rounded-lg h-32 flex items-center justify-center">
+                            <div className="text-center">
+                              <MapPin className="w-6 h-6 text-primary mx-auto mb-1" />
+                              <p className="text-sm font-medium">Live Location</p>
+                              <p className="text-xs text-muted-foreground">
+                                {animal.location.lat.toFixed(4)}, {animal.location.lng.toFixed(4)}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {/* Animal Status Zone */}
+                          <div className={`p-3 rounded-lg text-center text-sm font-medium ${
+                            animal.healthScore >= 7.0 
+                              ? 'bg-success/20 text-success border border-success/30'
+                              : animal.healthScore >= 4.5
+                                ? 'bg-warning/20 text-warning border border-warning/30'
+                                : 'bg-destructive/20 text-destructive border border-destructive/30'
+                          }`}>
+                            {animal.healthScore >= 7.0 
+                              ? 'Animal in Safe Zone'
+                              : animal.healthScore >= 4.5
+                                ? 'Animal in Threshold Zone'
+                                : 'Animal Lost - Too Far Away'
+                            }
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -447,69 +491,6 @@ const Tracker: React.FC<TrackerProps> = ({ userProfileImage }) => {
           </div>
         </section>
 
-        {/* Doctors Section */}
-        <section className="py-12 bg-secondary-soft">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-foreground mb-8">Nearest Veterinarians</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockDoctors.map((doctor) => (
-                <Card key={doctor.id} className="cursor-pointer hover:shadow-medium transition-shadow">
-                  <CardContent className="p-6" onClick={() => {
-                    setSelectedDoctor(doctor);
-                    setDoctorOpen(true);
-                  }}>
-                    <div className="flex items-center space-x-4">
-                      <img 
-                        src={doctor.image} 
-                        alt={doctor.name}
-                        className="w-16 h-16 rounded-full object-cover"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground">{doctor.name}</h3>
-                        <p className="text-sm text-muted-foreground">{doctor.specialization}</p>
-                        <div className="flex items-center space-x-1 mt-1">
-                          <Star className="w-4 h-4 text-warning fill-current" />
-                          <span className="text-sm">{doctor.rating}</span>
-                          <span className="text-sm text-muted-foreground">• {doctor.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Medicines Section */}
-        <section className="py-12">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-foreground mb-8">Recommended Medicines</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockMedicines.map((medicine) => (
-                <Card key={medicine.id} className="hover:shadow-medium transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <img 
-                        src={medicine.image} 
-                        alt={medicine.name}
-                        className="w-16 h-16 rounded-lg object-cover border border-border"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground">{medicine.name}</h3>
-                        <p className="text-sm text-muted-foreground">{medicine.dosage}</p>
-                        <p className="text-lg font-bold text-primary mt-1">{medicine.price}</p>
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm" className="w-full mt-4">
-                      Add to Cart
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Animal Report Modal */}
@@ -575,6 +556,46 @@ const Tracker: React.FC<TrackerProps> = ({ userProfileImage }) => {
                   <div className="bg-muted rounded-lg p-4 flex items-center justify-center space-x-2">
                     <MapPin className="w-5 h-5 text-primary" />
                     <span>Lat: {selectedAnimal.location.lat}, Lng: {selectedAnimal.location.lng}</span>
+                  </div>
+                </div>
+                
+                {/* Doctors and Treatment */}
+                <div>
+                  <h3 className="font-semibold mb-2">Nearest Veterinarians</h3>
+                  <div className="space-y-2">
+                    {mockDoctors.slice(0, 2).map((doctor) => (
+                      <div key={doctor.id} className="border border-border rounded-lg p-3 cursor-pointer hover:bg-muted/50" onClick={() => {
+                        setSelectedDoctor(doctor);
+                        setDoctorOpen(true);
+                      }}>
+                        <div className="flex items-center space-x-3">
+                          <img src={doctor.image} alt={doctor.name} className="w-10 h-10 rounded-full object-cover" />
+                          <div>
+                            <p className="font-medium text-sm">{doctor.name}</p>
+                            <p className="text-xs text-muted-foreground">{doctor.specialization}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Recommended Medicines */}
+                <div>
+                  <h3 className="font-semibold mb-2">Recommended Medicines</h3>
+                  <div className="space-y-2">
+                    {mockMedicines.slice(0, 2).map((medicine) => (
+                      <div key={medicine.id} className="border border-border rounded-lg p-3">
+                        <div className="flex items-center space-x-3">
+                          <img src={medicine.image} alt={medicine.name} className="w-10 h-10 rounded object-cover" />
+                          <div>
+                            <p className="font-medium text-sm">{medicine.name}</p>
+                            <p className="text-xs text-muted-foreground">{medicine.dosage}</p>
+                            <p className="text-sm font-bold text-primary">{medicine.price}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

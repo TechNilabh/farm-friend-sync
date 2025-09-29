@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Bluetooth, Upload, Check, Loader2, X } from 'lucide-react';
+import { Bluetooth, Upload, Check, Loader2, X, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import farmerThumbsUp from '@/assets/farmer-thumbs-up.jpg';
 
@@ -23,6 +23,8 @@ interface UploadedAnimal {
   species: string;
   priority: 'High' | 'Medium' | 'Low';
   parameters: string[];
+  thresholdLimit: string;
+  isFavorite: boolean;
 }
 
 const availableParameters = [
@@ -54,6 +56,8 @@ const SetupSection: React.FC<SetupSectionProps> = ({
   );
   const [uploadedAnimals, setUploadedAnimals] = useState<UploadedAnimal[]>([]);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
+  const [thresholdLimit, setThresholdLimit] = useState('100');
+  const [isFavorite, setIsFavorite] = useState(false);
   const { toast } = useToast();
 
   const handleDeviceSync = () => {
@@ -123,6 +127,8 @@ const SetupSection: React.FC<SetupSectionProps> = ({
         species: 'Lakhimi',
         priority: animalPriority,
         parameters: selectedParameters,
+        thresholdLimit,
+        isFavorite,
       };
       
       setUploadedAnimals([...uploadedAnimals, newAnimal]);
@@ -139,6 +145,8 @@ const SetupSection: React.FC<SetupSectionProps> = ({
         setAnimalName('');
         setAnimalPriority('Medium');
         setSelectedParameters(availableParameters.filter(p => p.default).map(p => p.id));
+        setThresholdLimit('100');
+        setIsFavorite(false);
         setIsUploadComplete(false);
       }, 1500);
     }
@@ -431,6 +439,30 @@ const SetupSection: React.FC<SetupSectionProps> = ({
                           <SelectItem value="Low">Low</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="threshold-limit">Threshold Walk Limit (meters)</Label>
+                      <Input 
+                        id="threshold-limit"
+                        type="number"
+                        value={thresholdLimit}
+                        onChange={(e) => setThresholdLimit(e.target.value)}
+                        placeholder="Enter threshold distance"
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="mark-favorite"
+                        checked={isFavorite}
+                        onCheckedChange={(checked) => setIsFavorite(checked === true)}
+                      />
+                      <Label htmlFor="mark-favorite" className="flex items-center space-x-1">
+                        <Star className="w-4 h-4" />
+                        <span>Mark as favorite</span>
+                      </Label>
                     </div>
                     
                     <div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, User, Activity } from 'lucide-react';
 
@@ -9,8 +9,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ userProfileImage }) => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const isTracker = location.pathname === '/tracker';
   return (
     <motion.nav 
       initial={{ y: -50, opacity: 0 }}
@@ -33,18 +33,29 @@ const Navbar: React.FC<NavbarProps> = ({ userProfileImage }) => {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
-            <Button variant="glass" size="sm" className="flex items-center space-x-2">
+            <Button 
+              variant={location.pathname === '/' ? "hero" : "glass"} 
+              size="sm" 
+              className={`flex items-center space-x-2 ${location.pathname === '/' ? 'ring-2 ring-primary/30' : ''}`}
+              onClick={() => navigate('/')}
+            >
               <Home className="w-4 h-4" />
               <span>Home</span>
             </Button>
-            <Button variant="glass" size="sm" className="flex items-center space-x-2">
+            <Button 
+              variant={location.pathname === '/profile' ? "hero" : "glass"} 
+              size="sm" 
+              className={`flex items-center space-x-2 ${location.pathname === '/profile' ? 'ring-2 ring-primary/30' : ''}`}
+              onClick={() => navigate('/profile')}
+            >
               <User className="w-4 h-4" />
               <span>Profile</span>
             </Button>
             <Button 
-              variant={isTracker ? "hero" : "glass"} 
+              variant={location.pathname === '/tracker' ? "hero" : "glass"} 
               size="sm" 
-              className={`flex items-center space-x-2 ${isTracker ? 'ring-2 ring-primary/30' : ''}`}
+              className={`flex items-center space-x-2 ${location.pathname === '/tracker' ? 'ring-2 ring-primary/30' : ''}`}
+              onClick={() => navigate('/tracker')}
             >
               <Activity className="w-4 h-4" />
               <span>Tracker</span>

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Tracker from "./pages/Tracker";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AuthModal from "./components/auth/AuthModal";
 import AuthPages from "./components/auth/AuthPages";
@@ -53,6 +54,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index userProfileImage={userData?.profileImage} />} />
             <Route path="/tracker" element={<Tracker userProfileImage={userData?.profileImage} />} />
+            <Route path="/profile" element={<Profile userProfileImage={userData?.profileImage} />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
