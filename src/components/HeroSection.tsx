@@ -1,122 +1,113 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import heroBackground from '@/assets/hero-background.jpg';
-import cowGrazing from '@/assets/cow-grazing.jpg';
-import dogEating from '@/assets/dog-eating.jpg';
 
 interface HeroSectionProps {
   onGetStarted: () => void;
 }
 
+const VIDEO_URL =
+  'https://res.cloudinary.com/dg361q5uv/video/upload/v1759143510/Sunny_Farm_Scene_with_Smart_Tech_lzkxwv.mp4';
+
 const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [showContent, setShowContent] = useState(false);
+  const [blurVideo, setBlurVideo] = useState(false);
+  const [firstPlayDone, setFirstPlayDone] = useState(false);
+
+  useEffect(() => {
+    const handleEnded = () => {
+      if (!firstPlayDone) {
+        setBlurVideo(true);
+        setTimeout(() => setShowContent(true), 350);
+        setFirstPlayDone(true);
+        if (videoRef.current) {
+          videoRef.current.loop = true;
+          videoRef.current.play();
+        }
+      }
+    };
+    const video = videoRef.current;
+    if (video) {
+      video.addEventListener('ended', handleEnded);
+      return () => video.removeEventListener('ended', handleEnded);
+    }
+  }, [firstPlayDone]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url(${heroBackground})` }}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden p-0 m-0">
+      {/* Video Background */}
+      <video
+        ref={videoRef}
+        src={VIDEO_URL}
+        autoPlay
+        muted
+        playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${blurVideo ? 'blur-sm opacity-80' : 'opacity-100'}`}
+        style={{ zIndex: 1 }}
       />
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-farm" />
 
-      {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          
-          {/* Left Animal - Cow */}
-          <motion.div 
-            className="flex justify-center lg:justify-end"
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+      {/* Subtle overlay for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/10 pointer-events-none" style={{ zIndex: 2 }} />
+
+      {/* Central Content */}
+      {showContent && (
+        <div className="relative z-10 flex flex-col items-center justify-center w-full h-full">
+          <motion.h1
+            className="text-5xl lg:text-6xl font-extrabold leading-tight text-center drop-shadow-lg"
+            style={{
+              background: 'linear-gradient(90deg, #00FFD0 0%, #00A2FF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'white',
+              textShadow: '0 2px 16px rgba(0,255,208,0.4), 0 1px 2px #000',
+            }}
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="relative">
-              <motion.img 
-                src={cowGrazing}
-                alt="Cow grazing peacefully"
-                className="w-64 h-48 object-cover rounded-2xl shadow-strong"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-success rounded-full animate-pulse" />
-            </div>
-          </motion.div>
-
-          {/* Center Content */}
-          <div className="text-center space-y-6">
-            <motion.h1 
-              className="text-5xl lg:text-6xl font-bold text-foreground leading-tight"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-            >
-              <span className="bg-gradient-hero bg-clip-text text-transparent">
-                Welcome to
-              </span>
-              <br />
-              <span className="text-primary">BioSync 360</span>
-            </motion.h1>
-            
-            <motion.p 
-              className="text-2xl text-muted-foreground font-medium"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              Future of Vet Care
-            </motion.p>
-
-            <motion.div
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Button 
-                variant="hero" 
-                size="xl"
-                onClick={onGetStarted}
-                className="animate-pulse-glow"
-              >
-                Get Started
-              </Button>
-            </motion.div>
-          </div>
-
-          {/* Right Animal - Dog */}
-          <motion.div 
-            className="flex justify-center lg:justify-start"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            Welcome to
+            <br />
+            <span style={{
+              background: 'linear-gradient(90deg, #FF6B00 0%, #FFD600 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'white',
+            }}>
+              BioSync 360
+            </span>
+          </motion.h1>
+          <motion.p
+            className="text-2xl font-semibold mt-6 text-center drop-shadow-md"
+            style={{
+              color: '#00FFD0',
+              textShadow: '0 2px 8px rgba(0,255,208,0.3), 0 1px 2px #000',
+            }}
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <div className="relative">
-              <motion.img 
-                src={dogEating}
-                alt="Dog eating meal"
-                className="w-64 h-48 object-cover rounded-2xl shadow-strong"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              />
-              <div className="absolute -top-2 -left-2 w-6 h-6 bg-accent rounded-full animate-pulse" />
-            </div>
+            Future of Vet Care
+          </motion.p>
+          <motion.div
+            className="mt-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <Button
+              variant="hero"
+              size="xl"
+              onClick={onGetStarted}
+              className="bg-gradient-to-r from-[#FF6B00] to-[#FFD600] text-white font-bold px-10 py-5 rounded-full shadow-lg hover:scale-105 transition-transform animate-pulse-glow"
+              style={{
+                boxShadow: '0 0 24px 4px #FFD60088, 0 2px 8px #000',
+                fontSize: '1.5rem',
+              }}
+            >
+              Get Started
+            </Button>
           </motion.div>
-
         </div>
-      </div>
-
-      {/* Floating Elements */}
-      <motion.div 
-        className="absolute top-20 left-10 w-4 h-4 bg-accent rounded-full opacity-60"
-        animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div 
-        className="absolute bottom-20 right-10 w-6 h-6 bg-primary rounded-full opacity-40"
-        animate={{ y: [0, -15, 0], x: [0, -10, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-      />
+      )}
     </section>
   );
 };

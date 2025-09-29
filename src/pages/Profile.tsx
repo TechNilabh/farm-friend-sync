@@ -62,7 +62,7 @@ const mockFavoriteAnimals: Animal[] = [
   {
     id: '1',
     name: 'Bella',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151095/cow2_fezqun.jpg',
     isFavorite: true,
     healthStats: {
       heartRate: 72,
@@ -74,7 +74,7 @@ const mockFavoriteAnimals: Animal[] = [
       {
         id: '1',
         disease: 'Dehydration',
-        diseaseImage: '/api/placeholder/100/80',
+        diseaseImage: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151617/Gemini_Generated_Image_jqdrjqdrjqdrjqdr_bwroap.png',
         description: 'Mild dehydration due to reduced water intake during hot weather.',
         vetHospital: 'Green Valley Veterinary Clinic - Dr. Rajesh Kumar',
         recoveryPercentage: 95,
@@ -84,7 +84,7 @@ const mockFavoriteAnimals: Animal[] = [
   {
     id: '2',
     name: 'Max',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151096/cow1_r6lcot.jpg',
     isFavorite: true,
     healthStats: {
       heartRate: 68,
@@ -96,7 +96,7 @@ const mockFavoriteAnimals: Animal[] = [
       {
         id: '1',
         disease: 'Minor Injury',
-        diseaseImage: '/api/placeholder/100/80',
+        diseaseImage: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151813/Gemini_Generated_Image_63a2j963a2j963a2_iolflj.png',
         description: 'Small cut on front leg, treated with antibiotics.',
         vetHospital: 'City Animal Hospital - Dr. Priya Sharma',
         recoveryPercentage: 100,
@@ -106,7 +106,7 @@ const mockFavoriteAnimals: Animal[] = [
   {
     id: '3',
     name: 'Luna',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151095/cat1_obypdn.jpg',
     isFavorite: true,
     healthStats: {
       heartRate: 75,
@@ -118,7 +118,7 @@ const mockFavoriteAnimals: Animal[] = [
       {
         id: '1',
         disease: 'Digestive Issues',
-        diseaseImage: '/api/placeholder/100/80',
+        diseaseImage: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151985/Gemini_Generated_Image_kyydg4kyydg4kyyd_rxcfg2.png',
         description: 'Stomach upset due to dietary changes, resolved with medication.',
         vetHospital: 'Farm Care Veterinary - Dr. Amit Patel',
         recoveryPercentage: 88,
@@ -131,7 +131,7 @@ const mockRecentCases: RecentCase[] = [
   {
     id: '1',
     name: 'Rocky',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151095/rocky_yrmyz9.jpg',
     currentDisease: 'Respiratory Infection',
     diagnosis: 'Bacterial infection in respiratory tract',
     medicalCare: 'Antibiotic treatment and rest prescribed',
@@ -146,7 +146,7 @@ const mockRecentCases: RecentCase[] = [
   {
     id: '2',
     name: 'Daisy',
-    image: '/api/placeholder/200/150',
+    image: 'https://res.cloudinary.com/dg361q5uv/image/upload/v1759151095/daisy_pt2op7.jpg',
     currentDisease: 'Joint Pain',
     diagnosis: 'Arthritis in hind legs',
     medicalCare: 'Anti-inflammatory medication and physiotherapy',
